@@ -26,7 +26,7 @@
     .card {
       width: 100%;
       max-width: 420px;
-      background: #ffffff;
+      background: #fff;
       border-radius: 18px;
       padding: 40px 28px;
       text-align: center;
@@ -52,15 +52,10 @@
       border-radius: 12px;
       padding: 16px;
       background: #111827;
-      color: #ffffff;
+      color: #fff;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #1f2937;
     }
 
     button:disabled {
@@ -73,6 +68,7 @@
       font-size: 14px;
       line-height: 1.5;
       display: none;
+      word-break: break-word;
     }
 
     .erro {
@@ -81,6 +77,10 @@
 
     .sucesso {
       color: #16a34a;
+    }
+
+    .processando {
+      color: #4b5563;
     }
   </style>
 </head>
@@ -107,7 +107,7 @@
   <script>
 
     // =====================================================
-    // CONFIGURAÇÃO DO SUPABASE
+    // SUPABASE
     // =====================================================
 
     const SUPABASE_URL =
@@ -119,9 +119,6 @@
 
     // =====================================================
     // REFERÊNCIA DO LINK
-    //
-    // Exemplo:
-    // seu-site.vercel.app/?ref=ABC123
     // =====================================================
 
     const parametros =
@@ -132,7 +129,7 @@
 
 
     // =====================================================
-    // ELEMENTOS DA PÁGINA
+    // ELEMENTOS
     // =====================================================
 
     const botao =
@@ -143,20 +140,22 @@
 
 
     // =====================================================
-    // MOSTRAR MENSAGEM
+    // MENSAGEM
     // =====================================================
 
     function mostrarMensagem(texto, tipo) {
 
       mensagem.textContent = texto;
+
       mensagem.className = tipo;
+
       mensagem.style.display = "block";
 
     }
 
 
     // =====================================================
-    // ENVIAR LOCALIZAÇÃO PARA O SUPABASE
+    // ENVIAR PARA SUPABASE
     // =====================================================
 
     async function enviarLocalizacao(posicao) {
@@ -171,6 +170,21 @@
         posicao.coords.accuracy;
 
 
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
+      console.log("Precisão:", precisao);
+
+
+      mostrarMensagem(
+        "Localização obtida. Enviando...",
+        "processando"
+      );
+
+
+      // ===================================================
+      // DADOS
+      // ===================================================
+
       const dados = {
 
         referencia: referencia,
@@ -179,26 +193,26 @@
 
         longitude: longitude,
 
-        precisao_metros:
-          precisao || null,
+        precisao_metros: precisao || null,
 
-        user_agent:
-          navigator.userAgent,
+        user_agent: navigator.userAgent,
 
-        ip_address:
-          null,
+        ip_address: null,
 
-        capturado_em:
-          new Date().toISOString()
+        capturado_em: new Date().toISOString()
 
       };
+
+
+      console.log("Dados enviados:", dados);
 
 
       try {
 
         const resposta = await fetch(
 
-          `${SUPABASE_URL}/rest/v1/localizacoes`,
+          SUPABASE_URL +
+          "/rest/v1/localizacoes",
 
           {
 
@@ -213,7 +227,7 @@
                 SUPABASE_KEY,
 
               "Authorization":
-                `Bearer ${SUPABASE_KEY}`,
+                "Bearer " + SUPABASE_KEY,
 
               "Prefer":
                 "return=minimal"
@@ -228,20 +242,48 @@
         );
 
 
+        // =================================================
+        // LÊ A RESPOSTA DO SUPABASE
+        // =================================================
+
+        const textoResposta =
+          await resposta.text();
+
+
+        console.log(
+          "Status Supabase:",
+          resposta.status
+        );
+
+        console.log(
+          "Resposta Supabase:",
+          textoResposta
+        );
+
+
+        // =================================================
+        // ERRO
+        // =================================================
+
         if (!resposta.ok) {
 
-          const erro =
-            await resposta.text();
+          mostrarMensagem(
 
-          console.error(
-            "Erro Supabase:",
-            erro
+            "Erro no Supabase (" +
+            resposta.status +
+            "): " +
+            textoResposta,
+
+            "erro"
+
           );
 
-          throw new Error(
-            "Erro ao enviar localização."
-          );
+          botao.disabled = false;
 
+          botao.textContent =
+            "Tentar novamente";
+
+          return;
         }
 
 
@@ -250,29 +292,38 @@
         // =================================================
 
         mostrarMensagem(
-          "Localização autorizada.",
+          "Localização registrada com sucesso.",
           "sucesso"
         );
 
         botao.disabled = true;
 
         botao.textContent =
-          "Localização Autorizada";
+          "Localização Registrada";
 
 
       } catch (erro) {
 
-        console.error(erro);
+        console.error(
+          "Erro de conexão:",
+          erro
+        );
+
 
         mostrarMensagem(
-          "Não foi possível concluir. Tente novamente.",
+
+          "Erro de conexão com o Supabase: " +
+          erro.message,
+
           "erro"
+
         );
+
 
         botao.disabled = false;
 
         botao.textContent =
-          "Permitir Localização";
+          "Tentar novamente";
 
       }
 
@@ -280,13 +331,13 @@
 
 
     // =====================================================
-    // TRATAMENTO DOS ERROS DE LOCALIZAÇÃO
+    // ERRO DE GEOLOCALIZAÇÃO
     // =====================================================
 
     function erroLocalizacao(erro) {
 
       console.error(
-        "Erro de geolocalização:",
+        "Erro de localização:",
         erro
       );
 
@@ -297,44 +348,38 @@
         "Permitir Localização";
 
 
-      // Usuário negou a permissão
       if (erro.code === 1) {
 
         mostrarMensagem(
-          "A localização é necessária. Permita o acesso à localização e tente novamente.",
+          "O Safari negou o acesso à localização. Verifique a permissão do site.",
           "erro"
         );
 
       }
 
-
-      // Localização indisponível
       else if (erro.code === 2) {
 
         mostrarMensagem(
-          "Não foi possível determinar sua localização. Tente novamente.",
+          "O dispositivo não conseguiu determinar a localização.",
           "erro"
         );
 
       }
 
-
-      // Tempo esgotado
       else if (erro.code === 3) {
 
         mostrarMensagem(
-          "A localização demorou muito para responder. Tente novamente.",
+          "A localização demorou muito para responder.",
           "erro"
         );
 
       }
 
-
-      // Outro erro
       else {
 
         mostrarMensagem(
-          "Não foi possível obter sua localização. Tente novamente.",
+          "Erro de localização: " +
+          erro.message,
           "erro"
         );
 
@@ -344,75 +389,52 @@
 
 
     // =====================================================
-    // BOTÃO DE LOCALIZAÇÃO
+    // BOTÃO
     // =====================================================
 
     botao.addEventListener(
       "click",
       function () {
 
-        mensagem.style.display = "none";
-
-
-        // Verifica se o navegador suporta localização
 
         if (!navigator.geolocation) {
 
           mostrarMensagem(
-            "Seu navegador não oferece suporte à localização.",
+            "Este navegador não suporta geolocalização.",
             "erro"
           );
 
           return;
-
         }
 
 
         botao.disabled = true;
 
         botao.textContent =
-          "Aguardando permissão...";
+          "Obtendo localização...";
+
+
+        mensagem.style.display =
+          "none";
 
 
         // =================================================
-        // SOLICITA A PERMISSÃO
-        //
-        // O envio ao Supabase NÃO acontece aqui.
-        //
-        // Ele só acontecerá dentro do primeiro callback,
-        // depois que o navegador fornecer a localização.
+        // SOLICITA LOCALIZAÇÃO
         // =================================================
 
         navigator.geolocation.getCurrentPosition(
 
-          // ===============================================
-          // PERMISSÃO CONCEDIDA
-          // ===============================================
-
           function (posicao) {
 
-            botao.textContent =
-              "Enviando...";
-
-
-            // Somente após obter a localização,
-            // envia para o Supabase.
+            // IMPORTANTE:
+            // O Supabase só é chamado aqui,
+            // depois que uma posição válida foi obtida.
 
             enviarLocalizacao(posicao);
 
           },
 
-
-          // ===============================================
-          // PERMISSÃO NEGADA OU OUTRO ERRO
-          // ===============================================
-
           erroLocalizacao,
-
-
-          // ===============================================
-          // CONFIGURAÇÕES
-          // ===============================================
 
           {
 
