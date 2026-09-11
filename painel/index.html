@@ -168,7 +168,7 @@
       const sameDay = d.toDateString() === now.toDateString();
       return sameDay ? 'Hoje • ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : fmtDate(value);
     };
-    const buildUrl = () => linkAtual ? location.origin + '/localizacao?ref=' + encodeURIComponent(linkAtual.slug) : '';
+    const buildUrl = () => linkAtual && linkAtual.slug ? location.origin + '/localizacao?ref=' + encodeURIComponent(linkAtual.slug) : '';
     const showToast = (message) => { const t=$('toast'); t.textContent=message; t.classList.add('show'); clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove('show'),2200); };
 
     function initMap() {
@@ -204,19 +204,19 @@
       initMap();
       user=await requireUser(); if(!user) return;
       $('topEmail').textContent=user.email||'—';
-      const p=await sb.from('perfis').select('*').eq('user_id',user.id).single();
+      const p=await sb.from('perfis').select('*').eq('id',user.id).single();
       if(p.error){ console.error(p.error); showToast('Não foi possível carregar seu perfil.'); return; }
       perfil=p.data;
       const nome=perfil.nome||user.email?.split('@')[0]||'usuário';
       $('topName').textContent=nome; $('hello').textContent='Olá, '+nome.split(' ')[0]+'!'; $('infoName').textContent=nome;
       $('createdAt').textContent=fmtDate(perfil.criado_em);
 
-      let l=await sb.from('links_compartilhados').select('*').eq('user_id',user.id).eq('ativo',true).maybeSingle();
+      let l=await sb.from('links_compartilhados').select('*').eq('perfil_id',user.id).eq('ativo',true).maybeSingle();
       if(l.error){ console.error(l.error); showToast('Não foi possível carregar seu link.'); return; }
       if(!l.data){
         const token=crypto.randomUUID().replaceAll('-','');
         const slug=(nome||'meu-link').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,35)||'meu-link';
-        l=await sb.from('links_compartilhados').insert({user_id:user.id,token,slug}).select().single();
+        l=await sb.from('links_compartilhados').insert({perfil_id:user.id,token,slug}).select().single();
       }
       if(l.error||!l.data){ console.error(l.error); showToast('Não foi possível criar seu link.'); return; }
       linkAtual=l.data;
@@ -229,7 +229,7 @@
       const url=buildUrl(); $('linkText').textContent=url; $('slug').value=linkAtual.slug; $('infoName').textContent=perfil?.nome||'—';
     }
     async function loadLocations(){
-      const r=await sb.from('localizacoes').select('*').eq('user_id',user.id).order('capturado_em',{ascending:false}).limit(50);
+      const r=await sb.from('localizacoes').select('*').eq('link_id',linkAtual.id).order('capturado_em',{ascending:false}).limit(50);
       if(r.error){ console.error(r.error); $('recentList').innerHTML='<div class="loading-row error-row">Não foi possível carregar as localizações.</div>'; return; }
       localizacoes=r.data||[]; $('totalAccess').textContent=localizacoes.length;
       if(!localizacoes.length){
@@ -247,7 +247,7 @@
     async function saveSlug(){
       const value=$('slug').value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50);
       if(!value) return showToast('Informe um nome válido.');
-      const r=await sb.from('links_compartilhados').update({slug:value,atualizado_em:new Date().toISOString()}).eq('id',linkAtual.id).eq('user_id',user.id).select().single();
+      const r=await sb.from('links_compartilhados').update({slug:value,atualizado_em:new Date().toISOString()}).eq('id',linkAtual.id).eq('perfil_id',user.id).select().single();
       if(r.error){console.error(r.error);return showToast(r.error.message||'Não foi possível salvar.');}
       linkAtual=r.data; renderLink(); closeModal(); showToast('Link atualizado.');
     }
