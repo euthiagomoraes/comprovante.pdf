@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020817">
+  <title>Comprovante GPS — Painel</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/painel/painel.css">
+</head>
+<body class="dashboard-page">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 56"><path d="M24 2C12.4 2 3 11.4 3 23c0 15.4 21 31 21 31s21-15.6 21-31C45 11.4 35.6 2 24 2Z"/><circle cx="24" cy="23" r="7"/></svg>
+        </div>
+        <div><strong>Comprovante</strong><span>GPS</span></div>
+      </div>
+
+      <nav class="nav-menu" aria-label="Navegação principal">
+        <a class="nav-item active" href="#inicio" data-scroll="inicio">
+          <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/></svg></span>
+          <span>Painel</span>
+        </a>
+        <a class="nav-item" href="#meu-link" data-scroll="meu-link">
+          <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.07.07l2-2A5 5 0 0 0 12 4l-1 1"/><path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1-1"/></svg></span>
+          <span>Meu Link</span>
+        </a>
+        <a class="nav-item" href="#localizacoes" data-scroll="localizacoes">
+          <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+          <span>Localizações</span>
+        </a>
+      </nav>
+
+      <div class="privacy-card">
+        <div class="privacy-glow"></div>
+        <div class="privacy-icon"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.2 8.6-8 10-4.8-1.4-8-5-8-10V6l8-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <strong>Sua privacidade<br>é nossa prioridade</strong>
+        <span>Seus dados estão seguros<br>com a gente.</span>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="topbar-spacer"></div>
+        <button class="notification" aria-label="Notificações"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button>
+        <div class="profile-menu">
+          <div class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4 3.3-6 8-6s7.3 2 8 6"/></svg></div>
+          <div class="profile-copy"><strong id="topName">Carregando...</strong><span id="topEmail">—</span></div>
+          <svg class="chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
+        </div>
+      </header>
+
+      <main class="content" id="inicio">
+        <section class="welcome-row">
+          <div>
+            <h1 id="hello">Olá!</h1>
+            <p>Aqui está o resumo do seu link e das últimas localizações.</p>
+          </div>
+          <div class="system-status-wrap">
+            <div class="system-status"><i></i> Sistema online</div>
+            <span id="currentDate">—</span>
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="glass-card link-stat" id="meu-link">
+            <div class="stat-head"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.07.07l2-2A5 5 0 0 0 12 4l-1 1"/><path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1-1"/></svg></div><strong>Seu link</strong></div>
+            <div class="link-field"><span id="linkText">Carregando...</span><button id="copyTop" aria-label="Copiar link"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg></button></div>
+            <button class="primary-btn small" id="copyTopLabel"><svg viewBox="0 0 24 24"><path d="M9 8h10v10H9z"/><path d="M5 16H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1"/></svg>Copiar link</button>
+          </article>
+
+          <article class="glass-card stat-card">
+            <div class="stat-head"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></div><strong>Total de acessos</strong></div>
+            <b class="stat-number" id="totalAccess">0</b>
+            <span>localizações registradas</span>
+          </article>
+
+          <article class="glass-card stat-card">
+            <div class="stat-head"><div class="icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><strong>Último acesso</strong></div>
+            <b class="last-access" id="lastAccess">Nenhum acesso</b>
+            <span id="lastPrecision">Aguardando localização</span>
+          </article>
+        </section>
+
+        <section class="map-layout">
+          <article class="map-card glass-card">
+            <div class="map-toolbar">
+              <div class="map-switch">
+                <button class="map-mode active" id="streetMode"><svg viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"/><path d="M9 3v15M15 6v15"/></svg>Mapa</button>
+                <button class="map-mode" id="satelliteMode"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>Satélite</button>
+              </div>
+              <div class="map-zoom"><button id="zoomIn">+</button><button id="zoomOut">−</button><button id="centerMap" title="Centralizar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button></div>
+            </div>
+            <div id="map"></div>
+            <div class="map-location-badge" id="mapBadge"><div class="badge-pin"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></div><div><strong id="coords">Nenhuma localização</strong><span id="mapPrecision">—</span></div></div>
+            <a class="maps-link" id="googleMaps" target="_blank" rel="noopener noreferrer"><span>◉</span> Google Maps</a>
+            <div class="map-empty" id="mapEmpty">Nenhuma localização recebida ainda.</div>
+          </article>
+
+          <article class="glass-card link-info-card">
+            <div class="card-title-row"><div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.07.07l2-2A5 5 0 0 0 12 4l-1 1"/><path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1-1"/></svg></div><h2>Informações do link</h2><span class="active-pill"><i></i> Ativo</span></div>
+            <div class="info-fields">
+              <div><label>Nome</label><strong id="infoName">—</strong></div>
+              <div><label>Criado em</label><strong id="createdAt">—</strong></div>
+              <div><label>Último acesso</label><strong id="infoLastAccess">—</strong></div>
+            </div>
+            <button class="outline-btn" id="manageLink"><svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1a2 2 0 0 1-2.8 2.8l-.1-.1a2 2 0 0 0-3.4 1.4v.2a2 2 0 0 1-4 0v-.2a2 2 0 0 0-3.4-1.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A2 2 0 0 0 3.7 12a2 2 0 0 0-1.7-2H2a2 2 0 0 1 0-4h.2a2 2 0 0 0 1.4-3.4l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A2 2 0 0 0 9.8 1.5V1.3a2 2 0 0 1 4 0v.2a2 2 0 0 0 3.4 1.4l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A2 2 0 0 0 20.3 9h.2a2 2 0 0 1 0 4h-.2a2 2 0 0 0-1.4 2Z" transform="scale(.78) translate(3.3 3.3)"/></svg>Gerenciar link</button>
+          </article>
+        </section>
+
+        <section class="lower-grid" id="localizacoes">
+          <article class="glass-card recent-card">
+            <div class="section-title"><div><h2>Últimas localizações</h2><p>Registros mais recentes recebidos pelo seu link.</p></div><button class="text-btn" id="viewAll">Ver todas</button></div>
+            <div class="recent-list" id="recentList"><div class="loading-row">Carregando localizações...</div></div>
+          </article>
+
+          <article class="glass-card share-card">
+            <div class="share-icon"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></div>
+            <h2>Compartilhar link</h2>
+            <p>Envie seu link para quem precisar acessar sua localização.</p>
+            <button class="outline-btn" id="copyShare"><svg viewBox="0 0 24 24"><path d="M9 8h10v10H9z"/><path d="M5 16H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1"/></svg>Copiar link</button>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop hidden" id="linkModal">
+    <div class="modal glass-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="closeModal" aria-label="Fechar">×</button>
+      <h2 id="modalTitle">Gerenciar link</h2>
+      <p>Você pode alterar o nome público do link sem perder o histórico de localizações.</p>
+      <label class="modal-label" for="slug">Nome do link</label>
+      <input class="modal-input" id="slug" maxlength="50" autocomplete="off">
+      <div class="modal-actions"><button class="outline-btn" id="cancelModal">Cancelar</button><button class="primary-btn" id="saveSlug">Salvar alterações</button></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/config.js"></script>
+  <script src="/lib/supabase.js"></script>
+  <script src="/lib/auth.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    let user = null;
+    let perfil = null;
+    let linkAtual = null;
+    let localizacoes = [];
+    let mapa = null;
+    let marcador = null;
+    let accuracyCircle = null;
+    let streetLayer = null;
+    let satelliteLayer = null;
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const fmtDate = (value, withTime = true) => value ? new Date(value).toLocaleString('pt-BR', withTime ? {dateStyle:'short', timeStyle:'short'} : {dateStyle:'short'}) : '—';
+    const relativeDate = (value) => {
+      if (!value) return 'Nenhum acesso';
+      const d = new Date(value), now = new Date();
+      const sameDay = d.toDateString() === now.toDateString();
+      return sameDay ? 'Hoje • ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : fmtDate(value);
+    };
+    const buildUrl = () => linkAtual ? location.origin + '/localizacao?ref=' + encodeURIComponent(linkAtual.slug) : '';
+    const showToast = (message) => { const t=$('toast'); t.textContent=message; t.classList.add('show'); clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove('show'),2200); };
+
+    function initMap() {
+      mapa = L.map('map', {zoomControl:false, attributionControl:true, minZoom:3}).setView([-1.4628,-48.4904], 14);
+      streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'});
+      satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19, attribution:'Tiles © Esri'});
+      streetLayer.addTo(mapa);
+      $('zoomIn').onclick=()=>mapa.zoomIn(); $('zoomOut').onclick=()=>mapa.zoomOut(); $('centerMap').onclick=()=>centerLast();
+      $('streetMode').onclick=()=>setMapMode('street'); $('satelliteMode').onclick=()=>setMapMode('satellite');
+    }
+    function setMapMode(mode) {
+      const isSat=mode==='satellite';
+      if(isSat){ mapa.removeLayer(streetLayer); satelliteLayer.addTo(mapa); } else { mapa.removeLayer(satelliteLayer); streetLayer.addTo(mapa); }
+      $('streetMode').classList.toggle('active',!isSat); $('satelliteMode').classList.toggle('active',isSat);
+    }
+    function customPin() {
+      return L.divIcon({className:'custom-map-pin', html:'<div class="pin-core"><span></span></div>', iconSize:[48,48], iconAnchor:[24,24]});
+    }
+    function updateMap(loc) {
+      if(!mapa || !loc) return;
+      const lat=Number(loc.latitude), lng=Number(loc.longitude), acc=Number(loc.precisao_metros)||0;
+      if(!Number.isFinite(lat)||!Number.isFinite(lng)) return;
+      if(marcador) mapa.removeLayer(marcador); if(accuracyCircle) mapa.removeLayer(accuracyCircle);
+      marcador=L.marker([lat,lng],{icon:customPin(),zIndexOffset:1000}).addTo(mapa);
+      if(acc>0) accuracyCircle=L.circle([lat,lng],{radius:acc, className:'accuracy-ring', weight:1, fillOpacity:.12}).addTo(mapa);
+      mapa.setView([lat,lng], Math.max(mapa.getZoom(),15), {animate:true});
+      $('coords').textContent=lat.toFixed(4)+', '+lng.toFixed(4); $('mapPrecision').textContent=acc ? 'Precisão: '+Math.round(acc)+' metros' : 'Precisão não informada';
+      $('googleMaps').href='https://www.google.com/maps?q='+encodeURIComponent(lat+','+lng); $('googleMaps').style.display='inline-flex'; $('mapEmpty').style.display='none';
+    }
+    function centerLast(){ if(localizacoes[0]) updateMap(localizacoes[0]); }
+
+    async function init(){
+      initMap();
+      user=await requireUser(); if(!user) return;
+      $('topEmail').textContent=user.email||'—';
+      const p=await sb.from('perfis').select('*').eq('user_id',user.id).single();
+      if(p.error){ console.error(p.error); showToast('Não foi possível carregar seu perfil.'); return; }
+      perfil=p.data;
+      const nome=perfil.nome||user.email?.split('@')[0]||'usuário';
+      $('topName').textContent=nome; $('hello').textContent='Olá, '+nome.split(' ')[0]+'!'; $('infoName').textContent=nome;
+      $('createdAt').textContent=fmtDate(perfil.criado_em);
+
+      let l=await sb.from('links_compartilhados').select('*').eq('user_id',user.id).eq('ativo',true).maybeSingle();
+      if(l.error){ console.error(l.error); showToast('Não foi possível carregar seu link.'); return; }
+      if(!l.data){
+        const token=crypto.randomUUID().replaceAll('-','');
+        const slug=(nome||'meu-link').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,35)||'meu-link';
+        l=await sb.from('links_compartilhados').insert({user_id:user.id,token,slug}).select().single();
+      }
+      if(l.error||!l.data){ console.error(l.error); showToast('Não foi possível criar seu link.'); return; }
+      linkAtual=l.data;
+      renderLink();
+      await loadLocations();
+      $('currentDate').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})+' • '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    }
+
+    function renderLink(){
+      const url=buildUrl(); $('linkText').textContent=url; $('slug').value=linkAtual.slug; $('infoName').textContent=perfil?.nome||'—';
+    }
+    async function loadLocations(){
+      const r=await sb.from('localizacoes').select('*').eq('user_id',user.id).order('capturado_em',{ascending:false}).limit(50);
+      if(r.error){ console.error(r.error); $('recentList').innerHTML='<div class="loading-row error-row">Não foi possível carregar as localizações.</div>'; return; }
+      localizacoes=r.data||[]; $('totalAccess').textContent=localizacoes.length;
+      if(!localizacoes.length){
+        $('lastAccess').textContent='Nenhum acesso'; $('lastPrecision').textContent='Aguardando localização'; $('infoLastAccess').textContent='—'; $('recentList').innerHTML='<div class="empty-row">Nenhuma localização recebida ainda.</div>'; $('mapEmpty').style.display='flex'; $('googleMaps').style.display='none'; return;
+      }
+      const last=localizacoes[0]; $('lastAccess').textContent=relativeDate(last.capturado_em); $('lastPrecision').textContent=last.precisao_metros ? 'Precisão: '+Math.round(last.precisao_metros)+' metros' : 'Precisão não informada'; $('infoLastAccess').textContent=fmtDate(last.capturado_em); updateMap(last);
+      $('recentList').innerHTML=localizacoes.slice(0,5).map((x,i)=>{
+        const coords=Number(x.latitude).toFixed(4)+', '+Number(x.longitude).toFixed(4); const mapUrl='https://www.google.com/maps?q='+encodeURIComponent(x.latitude+','+x.longitude);
+        return '<button class="recent-item" data-index="'+i+'"><span class="recent-pin"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="recent-copy"><strong>'+esc(fmtDate(x.capturado_em))+'</strong><span>'+esc(coords)+'</span><small>Precisão: '+(x.precisao_metros ? Math.round(x.precisao_metros)+' metros' : 'não informada')+'</small></span><span class="recent-arrow">›</span></button>';
+      }).join('');
+      document.querySelectorAll('.recent-item').forEach(el=>el.addEventListener('click',()=>{const x=localizacoes[Number(el.dataset.index)]; updateMap(x); document.querySelector('.map-card').scrollIntoView({behavior:'smooth',block:'center'});}));
+    }
+
+    async function copyLink(){ const url=buildUrl(); if(!url) return; try{await navigator.clipboard.writeText(url);showToast('Link copiado.');}catch{showToast('Copie o link manualmente.');} }
+    async function saveSlug(){
+      const value=$('slug').value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50);
+      if(!value) return showToast('Informe um nome válido.');
+      const r=await sb.from('links_compartilhados').update({slug:value,atualizado_em:new Date().toISOString()}).eq('id',linkAtual.id).eq('user_id',user.id).select().single();
+      if(r.error){console.error(r.error);return showToast(r.error.message||'Não foi possível salvar.');}
+      linkAtual=r.data; renderLink(); closeModal(); showToast('Link atualizado.');
+    }
+    function openModal(){ $('linkModal').classList.remove('hidden'); $('slug').focus(); }
+    function closeModal(){ $('linkModal').classList.add('hidden'); }
+
+    $('copyTop').onclick=copyLink; $('copyTopLabel').onclick=copyLink; $('copyShare').onclick=copyLink; $('manageLink').onclick=openModal; $('saveSlug').onclick=saveSlug; $('closeModal').onclick=closeModal; $('cancelModal').onclick=closeModal;
+    $('linkModal').addEventListener('click',e=>{if(e.target===$('linkModal'))closeModal();});
+    $('viewAll').onclick=()=>document.querySelector('.recent-card').scrollIntoView({behavior:'smooth',block:'start'});
+    document.querySelectorAll('[data-scroll]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.getElementById(a.dataset.scroll)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));a.classList.add('active');$('sidebar').classList.remove('open');}));
+    $('mobileMenu').onclick=()=> $('sidebar').classList.toggle('open');
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+    init();
+  </script>
+</body>
+</html>
