@@ -1,1 +1,1 @@
-window.SUPABASE_URL="https://SEU-PROJETO.supabase.co";window.SUPABASE_KEY="SUA_CHAVE_PUBLICA";
+window.SUPABASE_URL="https://gotszlmzwkhyymtpnkwp.supabase.co";window.SUPABASE_KEY="sb_publishable_yi9zx6TQeZHI3z1JlhlqZA_p_jsTZd6";
